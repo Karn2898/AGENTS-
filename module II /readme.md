@@ -8,14 +8,24 @@ module II /tools here is how you use tools in smolagents
 To interact with a tool, the LLM needs an interface description with these key components:
 
 Name: What the tool is called
+
 Tool description: What the tool does
+
 Input types and descriptions: What arguments the tool accepts
+
 Output type: What the tool returns
-For instance, while preparing for a party at Wayne Manor, Alfred needs various tools to gather information - from searching for catering services to finding party theme ideas. Here’s how a simple search tool interface might look:
+
+For instance, while preparing for a party at Wayne Manor, Alfred needs various tools to
+gather information - from searching for catering services to finding party theme ideas.
 ---------------------------------------------------------------------------------
+Here’s how a simple search tool interface might look:
+
 Name: web_search
+
 Tool description: Searches the web for specific queries
+
 Input: query (string) - The search term to look up
+
 Output: String containing the search results
 ____________________________________________________________________________________
 smolagents comes with a set of pre-built tools that can be directly injected into your agent. The default toolbox includes:
@@ -26,3 +36,14 @@ UserInputTool
 DuckDuckGoSearchTool
 GoogleSearchTool
 VisitWebpageTool
+______________________________________________________________________________________
+
+**Retrieval Agents**: Agentic RAG (Retrieval-Augmented Generation) extends traditional RAG systems by combining autonomous agents with dynamic knowledge retrieval.
+
+While traditional RAG systems use an LLM to answer queries based on retrieved data, agentic RAG enables intelligent control of both retrieval and generation processes, improving efficiency and accuracy.
+
+enhanced agent can:
+
+1.First check the documentation for relevant information
+2.Combine insights from the knowledge base
+3.Maintain conversation context in memory
