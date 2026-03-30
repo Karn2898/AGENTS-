@@ -47,3 +47,16 @@ enhanced agent can:
 1.First check the documentation for relevant information
 2.Combine insights from the knowledge base
 3.Maintain conversation context in memory
+_______________________________________________________________________________________
+module II /smolagents/multi_agent_systems.py Multi-agent systems :
+A typical setup might include:
+
+A Manager Agent for task delegation
+A Code Interpreter Agent for code execution
+A Web Search Agent for information retrieval
+
+For example, a Multi-Agent RAG system can integrate:
+
+A Web Agent for browsing the internet.
+A Retriever Agent for fetching information from knowledge bases.
+An Image Generation Agent for producing visuals.
