@@ -1,3 +1,4 @@
+#use images from Wikipedia to keep the example minimal, but imagine the possible use-case
 from PIL import Image
 import requests
 from io import BytesI0
@@ -16,3 +17,23 @@ for url in image_urls:
 response=requests.get(url ,headers=headers)
 image=Image.open(BytesI0(response.content)).convert("RGB")
 images.append(image)
+#now the agent will tell us wheather one guest is actually a superhero
+from smolagents import CodeAgent ,OpenAIServerModel
+
+model=OpenAIServiceModel(model_id="gpt-4o")
+
+#instantiate the agent
+agent=CodeAgent(
+      tools=[],
+      model=model,
+      max_steps=20,
+      verbosity_level=2
+)
+
+response=agent.run(
+       """
+    Describe the costume and makeup that the comic character in these photos is wearing and return the description.
+    Tell me if the guest is The Joker or Wonder Woman.
+    """,
+      images=images
+)
