@@ -60,3 +60,7 @@ For example, a Multi-Agent RAG system can integrate:
 A Web Agent for browsing the internet.
 A Retriever Agent for fetching information from knowledge bases.
 An Image Generation Agent for producing visuals.
+
+______________________________________________________________________________________
+**LangGrph**  To build applications with LangGraph, you need to understand its core components.An application in LangGraph starts from an entrypoint, and depending on the execution, the flow may go to one function or another until it reaches the END.
+<img width="1505" height="672" alt="application" src="https://github.com/user-attachments/assets/1a8e3cd9-f54b-4360-bd83-efe3f13f99dd" />
