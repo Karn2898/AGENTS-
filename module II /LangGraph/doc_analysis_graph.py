@@ -109,3 +109,13 @@ react_graph=builder.compile()
 
 # Show the butler's thought process
 display(Image(react_graph.get_graph(xray=True).draw_mermaid_png())
+#in action
+messages = [HumanMessage(content="Divide 6790 by 5")]
+messages = react_graph.invoke({"messages": messages, "input_file": None})
+
+# Show the messages
+for m in messages['messages']:
+    m.pretty_print()
+#example 2
+messages = [HumanMessage(content="According to the note provided by Mr. Wayne in the provided images. What's the list of items I should buy for the dinner menu?")]
+messages = react_graph.invoke({"messages": messages, "input_file": "Batman_training_and_meals.png"})
