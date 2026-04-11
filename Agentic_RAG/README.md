@@ -7,3 +7,5 @@ Integrate the Tool with Alfred
 Step 1: Load and Prepare the Dataset
 
 First, we need to transform our raw guest data into a format that’s optimized for retrieval.
+
+Step 2: Create the Retriever Tool
