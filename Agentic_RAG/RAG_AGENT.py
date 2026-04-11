@@ -15,3 +15,22 @@ docs=[
   )
   for guest in guest_dataset
 ]
+
+#create retrieval tool
+from langchain_community.retrievers import BM25Retriever
+from langchain_core.tools import tool
+
+bm25_retriever=BM25Retriever.from_documents(docs)
+
+def extract_text(query:str)->str:
+  results=bm25_retriever.invoke(query)
+ if results:
+   return "\n\n".join([doc.page_content for doc in results[:3]])
+ else:
+   return "no matching"
+
+guest_info_tool=Tool(
+  name="guest_info_retriever",
+  func=extract_text,
+  description="Retrieves detailed information about gala guests based on their name or relation."
+)
