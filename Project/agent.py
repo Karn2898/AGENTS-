@@ -17,7 +17,12 @@ WEB_SEARCH_BRIEF = (
 
 @tool
 def summarize_goal(goal: str, context: Optional[str] = None) -> str:
-    """Turn a user goal into a short execution brief for the agent."""
+    """Turn a user goal into a short execution brief for the agent.
+
+    Args:
+        goal: The main objective the agent should solve.
+        context: Optional supporting context that narrows scope.
+    """
     context_text = f" Context: {context}." if context else ""
     return f"Goal: {goal}.{context_text} Focus on the clearest actionable answer."
 
