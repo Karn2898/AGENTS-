@@ -1,10 +1,10 @@
 # Project Agent
 
-This folder contains a small smolagents-based starter agent.
+This folder contains a small smolagents-based web search agent.
 
 ## Files
 
-- `agent.py`: runnable agent template
+- `agent.py`: runnable web research agent template
 
 ## Run
 
@@ -21,3 +21,5 @@ Example:
 ```bash
 python Project/agent.py "Find three recent AI agent frameworks and summarize them"
 ```
+
+If you run it without arguments, it uses a default web research prompt.

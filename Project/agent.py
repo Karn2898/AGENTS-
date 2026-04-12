@@ -4,6 +4,12 @@ from typing import Optional
 from smolagents import CodeAgent, DuckDuckGoSearchTool, FinalAnswerTool, InferenceClientModel, VisitWebpageTool, tool
 
 
+DEFAULT_WEB_SEARCH_TASK = (
+    "Search the web for the latest reliable information on a topic, "
+    "open the most relevant sources, and return a concise summary with source names."
+)
+
+
 @tool
 def summarize_goal(goal: str, context: Optional[str] = None) -> str:
     """Turn a user goal into a short execution brief for the agent."""
@@ -43,8 +49,13 @@ def run_agent(task: str) -> str:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run the Project agent")
-    parser.add_argument("task", help="The task for the agent to solve")
+    parser = argparse.ArgumentParser(description="Run the Project web search agent")
+    parser.add_argument(
+        "task",
+        nargs="?",
+        default=DEFAULT_WEB_SEARCH_TASK,
+        help="The research task for the agent to solve",
+    )
     args = parser.parse_args()
 
     result = run_agent(args.task)
