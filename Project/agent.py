@@ -9,6 +9,11 @@ DEFAULT_WEB_SEARCH_TASK = (
     "open the most relevant sources, and return a concise summary with source names."
 )
 
+WEB_SEARCH_BRIEF = (
+    "Use web search and page visits to answer the task. Prefer reliable sources, "
+    "compare conflicting claims when needed, and include source names in the final answer."
+)
+
 
 @tool
 def summarize_goal(goal: str, context: Optional[str] = None) -> str:
@@ -43,7 +48,7 @@ def build_agent() -> CodeAgent:
 
 def run_agent(task: str) -> str:
     agent = build_agent()
-    return agent.run(task)
+    return agent.run(f"{WEB_SEARCH_BRIEF}\n\nTask: {task}")
 
 
 if __name__ == "__main__":
@@ -56,7 +61,16 @@ if __name__ == "__main__":
         default=DEFAULT_WEB_SEARCH_TASK,
         help="The research task for the agent to solve",
     )
+    parser.add_argument(
+        "--context",
+        default=None,
+        help="Extra context to guide the web research task",
+    )
     args = parser.parse_args()
 
-    result = run_agent(args.task)
+    task = args.task
+    if args.context:
+        task = f"{task}\n\nContext: {args.context}"
+
+    result = run_agent(task)
     print(result)

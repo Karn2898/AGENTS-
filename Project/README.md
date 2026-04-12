@@ -22,4 +22,10 @@ Example:
 python Project/agent.py "Find three recent AI agent frameworks and summarize them"
 ```
 
+With extra context:
+
+```bash
+python Project/agent.py "Compare two search libraries" --context "Focus on Python support and maintenance activity"
+```
+
 If you run it without arguments, it uses a default web research prompt.
