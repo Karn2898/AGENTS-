@@ -66,5 +66,7 @@ if opponent_pkmn:
                     f"Status: {opponent_pkmn.status.name if opponent_pkmn.status else 'None'} " \
                     f"Boosts: {opponent_pkmn.boosts}"  
                     
-opponent_pkmn_info= f"Opponent's active Pokemon: {opp_info_str}"             
+opponent_pkmn_info= f"Opponent's active Pokemon: {opp_info_str}"  
+
+           
                       
