@@ -2,7 +2,6 @@ import os
 from typing import Any, Dict
 
 from google import genai
-from google.genai import types
 from poke_env.player import Player
 
 
@@ -52,6 +51,71 @@ class LLMAgentBase(Player):
     async def _get_llm_decision(self, battle_state: str) -> Dict[str, Any]:
         raise NotImplementedError
 
+    def _build_battle_state(self, battle: Any) -> str:
+        """Build a compact, model-friendly snapshot of the current battle."""
+        active = getattr(battle, "active_pokemon", None)
+        opponent = getattr(battle, "opponent_active_pokemon", None)
+
+        active_name = getattr(active, "species", None) or getattr(active, "name", "Unknown")
+        active_hp = getattr(active, "current_hp_fraction", None)
+        opponent_name = getattr(opponent, "species", None) or getattr(opponent, "name", "Unknown")
+        opponent_hp = getattr(opponent, "current_hp_fraction", None)
+
+        move_lines = []
+        for move in getattr(battle, "available_moves", []):
+            move_lines.append(
+                f"- id={getattr(move, 'id', '')}, name={getattr(move, 'move', '')}, "
+                f"type={getattr(getattr(move, 'type', None), 'name', None)}, "
+                f"power={getattr(move, 'base_power', None)}, accuracy={getattr(move, 'accuracy', None)}"
+            )
+
+        switch_lines = []
+        for mon in getattr(battle, "available_switches", []):
+            switch_lines.append(
+                f"- species={getattr(mon, 'species', '')}, hp={getattr(mon, 'current_hp_fraction', None)}, "
+                f"status={getattr(mon, 'status', None)}"
+            )
+
+        return (
+            f"Turn: {getattr(battle, 'turn', '?')}\n"
+            f"Your active: {active_name} (hp={active_hp})\n"
+            f"Opponent active: {opponent_name} (hp={opponent_hp})\n"
+            "Available moves:\n"
+            f"{chr(10).join(move_lines) if move_lines else '- none'}\n"
+            "Available switches:\n"
+            f"{chr(10).join(switch_lines) if switch_lines else '- none'}"
+        )
+
+    async def choose_move(self, battle: Any) -> Any:
+        """Convert an LLM decision into a legal battle order, with safe fallback."""
+        battle_state = self._build_battle_state(battle)
+        result = await self._get_llm_decision(battle_state)
+
+        decision = result.get("decision") if isinstance(result, dict) else None
+        if not isinstance(decision, dict):
+            return self.choose_random_move(battle)
+
+        function_name = decision.get("name")
+        arguments = decision.get("arguments") or {}
+
+        if function_name == "choose_move":
+            requested_name = normalize_name(str(arguments.get("move_name", "")))
+            for move in battle.available_moves:
+                move_id = normalize_name(getattr(move, "id", "") or "")
+                move_name = normalize_name(getattr(move, "move", "") or "")
+                if requested_name in {move_id, move_name}:
+                    return self.create_order(move)
+
+        if function_name == "choose_switch":
+            requested_name = normalize_name(str(arguments.get("pokemon_name", "")))
+            for mon in battle.available_switches:
+                species = normalize_name(getattr(mon, "species", "") or "")
+                name = normalize_name(getattr(mon, "name", "") or "")
+                if requested_name in {species, name}:
+                    return self.create_order(mon)
+
+        return self.choose_random_move(battle)
+
 
 class GeminiAgent(LLMAgentBase):
     """Uses Google Gemini API for battle decisions."""
@@ -88,10 +152,10 @@ class GeminiAgent(LLMAgentBase):
         )
 
         try:
-            tools = [types.Tool(function_declarations=self.function_declarations)]
-            config = types.GenerateContentConfig(
+            tools = [genai.types.Tool(function_declarations=self.function_declarations)]
+            config = genai.types.GenerateContentConfig(
                 tools=tools,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+                automatic_function_calling=genai.types.AutomaticFunctionCallingConfig(disable=True),
             )
             response = self.genai_client.models.generate_content(
                 model=self.model_name,
