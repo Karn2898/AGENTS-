@@ -13,6 +13,7 @@ from langgraph.graph.message import add_messages
 import sqlite3
 import requests
 import asyncio
+from langchain_mcp_adapters.client import MultiServerMCPClient
 
 def _load_env_file(path: str = ".env") -> None:
     env_path = Path(path)
@@ -43,26 +44,19 @@ FALLBACK_MODELS = [
     if model.strip()
 ]
 
-@tool
-def calculator(first_num:float,second_num:float ,operation:str)->dict:
-    """Perform a basic arithmetic operation on two numbers and return a result payload."""
-    try:
-        if operation=='add':
-            result=first_num+second_num
-        elif operation=='sub':
-            result=first_num-second_num
-        elif operation=='mul':
-            result=first_num*second_num
-        elif operation=='div':
-            return{'error':'division by zero is not allowed'}
-            result=first_num/second_num if second_num!=0 else None
-        else: 
-            return{'error':'invalid operation'}
-        return {'first_num': first_num,'second_num':second_num,'operation':operation,'result':result}
-    except Exception as e:
-        return {'error': str(e)}
+#client
+client=MultiServerMCPClient(
+    {
+        "arith":{
+            "transport":"stdio",
+            "command":"python3",
+            "args":#path to mco client's file in local pc
+        }
+    }
+)
+async def build_graph():
+tools=await client.get_tools()
 
-tools= [ calculator]
 
 llm_with_tools=llm.blind_tools(tools)
 
