@@ -88,7 +88,7 @@ chatbot = graph.compile(checkpointer=checkpointer)
   
   return chatbot
 async def main():
-  chatbt=build_graph()
+  chatbt=await build_graph()
   response =await  chatbot.ainvoke(
             {"messages": [HumanMessage(content=user_message)]},
             config={"configurable": {"thread_id": "1"}},
